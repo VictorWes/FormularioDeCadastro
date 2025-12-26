@@ -31,4 +31,40 @@ export class ClienteService {
     );
     return clientes;
   }
+
+  buscarClientePorId(id: string): Cliente | undefined {
+    const clientes = this.obterStorage();
+    return clientes.find((c) => c.id === id);
+  }
+
+  pesquisarClientes(nomeBusca: string): Cliente[] {
+    const clientes = this.obterStorage();
+    if (!nomeBusca) {
+      return clientes;
+    }
+    return clientes.filter(
+      (cliente) => cliente.nome?.indexOf(nomeBusca) !== -1
+    );
+  }
+
+  atualizar(cliente: Cliente) {
+    const storage = this.obterStorage();
+    storage.forEach((c) => {
+      if (c.id === cliente.id) {
+        Object.assign(c, cliente);
+      }
+    });
+    localStorage.setItem(ClienteService.REPO_CLIENTES, JSON.stringify(storage));
+  }
+
+  deletar(cliente: Cliente) {
+    const storage = this.obterStorage();
+
+    const novaLista = storage.filter((c) => c.id !== cliente.id);
+
+    localStorage.setItem(
+      ClienteService.REPO_CLIENTES,
+      JSON.stringify(novaLista)
+    );
+  }
 }
